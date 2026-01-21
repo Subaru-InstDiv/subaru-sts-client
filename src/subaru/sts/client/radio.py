@@ -62,7 +62,7 @@ class Radio:
                     # Send quit command to disconnect from STSboard gracefully
                     sock.sendall(b'Q\n')
             else:
-                msg = 'Invalid response'
+                msg = f'Invalid response: {response}'
                 raise RuntimeError(msg)
         finally:
             sock.close()
@@ -101,7 +101,7 @@ class Radio:
                 #     # Send quit command to disconnect from STSboard gracefully
                 #     sock.sendall(b'Q\n')
             else:
-                msg = 'Invalid response'
+                msg = f'Invalid response: {response}'
                 raise RuntimeError(msg)
         finally:
             sock.close()

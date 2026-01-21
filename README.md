@@ -46,20 +46,25 @@
 
 ## Quick start examples
 ### Create Datum values
-- from subaru.sts.client import Datum
-- d1 = Datum.Integer(id=1090, timestamp=0, value=1)
-- d2 = Datum.Float(id=1091, timestamp=0, value=3.14)
-- d3 = Datum.Text(id=1092, timestamp=0, value='hello')
-- d4 = Datum.IntegerWithText(id=1093, timestamp=0, value=(1, 'ok'))
-- d5 = Datum.FloatWithText(id=1094, timestamp=0, value=(2.5, 'm/s'))
-- d6 = Datum.Exponent(id=1095, timestamp=0, value=1.0)
+
+```py
+from subaru.sts.client import Datum
+d1 = Datum.Integer(id=1090, timestamp=0, value=1)
+d2 = Datum.Float(id=1091, timestamp=0, value=3.14)
+d3 = Datum.Text(id=1092, timestamp=0, value='hello')
+d4 = Datum.IntegerWithText(id=1093, timestamp=0, value=(1, 'ok'))
+d5 = Datum.FloatWithText(id=1094, timestamp=0, value=(2.5, 'm/s'))
+d6 = Datum.Exponent(id=1095, timestamp=0, value=1.0)
+```
 
 ### Send and receive with Radio
-- from subaru.sts.client import Radio, Datum
-- radio = Radio()  # defaults shown below
-- radio.transmit([d1, d2, d3, d4, d5, d6])
-- latest = radio.receive([1090, 1091, 1092, 1093, 1094, 1095])
-- print(latest)
+```py
+from subaru.sts.client import Radio, Datum
+radio = Radio()  # defaults shown below
+radio.transmit([d1, d2, d3, d4, d5, d6])
+latest = radio.receive([1090, 1091, 1092, 1093, 1094, 1095])
+print(latest)
+```
 
 ## Configuration
 - Radio defaults (as defined in src/subaru/sts/client/radio.py):
