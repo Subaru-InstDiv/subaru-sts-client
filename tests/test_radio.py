@@ -71,13 +71,13 @@ class TestRadioInit:
     def test_repr(self):
         """Test __repr__ method."""
         radio = Radio(host="testhost", port=1234, timeout=2.5)
-        expected = "Radio(host='testhost', port=1234, timeout=2.5)"
+        expected = "Radio(host='testhost', port=1234, timeout=2.5, dry_run=False)"
         assert repr(radio) == expected
 
     def test_repr_default(self):
         """Test __repr__ with default values."""
         radio = Radio()
-        expected = "Radio(host='sts', port=9001, timeout=5.0)"
+        expected = "Radio(host='sts', port=9001, timeout=5.0, dry_run=False)"
         assert repr(radio) == expected
 
 
@@ -824,3 +824,36 @@ class TestRadioEdgeCases:
 
         # Socket should still be closed
         mock_socket.close.assert_called_once()
+
+
+class TestRadioDryRun:
+    """Tests for dry_run functionality."""
+
+    @patch("socket.socket")
+    def test_transmit_dry_run_class_level(self, mock_socket_class, sample_data):
+        """Test transmit with dry_run enabled at class level."""
+        radio = Radio(dry_run=True)
+        radio.transmit(sample_data)
+        mock_socket_class.assert_not_called()
+
+    @patch("socket.socket")
+    def test_transmit_dry_run_method_override(self, mock_socket_class, sample_data):
+        """Test transmit with dry_run enabled via method override."""
+        radio = Radio(dry_run=False)
+        radio.transmit(sample_data, dry_run=True)
+        mock_socket_class.assert_not_called()
+
+    @patch("socket.socket")
+    def test_transmit_dry_run_invalid_data(self, mock_socket_class):
+        """Test transmit with dry_run still validates data."""
+        radio = Radio(dry_run=True)
+        # Create datum with invalid format by bypassing validation
+        datum = Datum.__new__(Datum)
+        datum.id = 0
+        datum.format = 6
+        datum.timestamp = 0
+        datum.value = 0
+
+        with pytest.raises(RuntimeError, match="Invalid data type"):
+            radio.transmit([datum])
+        mock_socket_class.assert_not_called()
