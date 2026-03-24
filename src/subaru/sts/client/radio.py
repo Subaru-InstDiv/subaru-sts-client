@@ -17,30 +17,39 @@ class Radio:
     # Default timeout (seconds)
     TIMEOUT = 5.0
 
-    def __init__(self, host=HOST, port=PORT, timeout=TIMEOUT):
+    def __init__(self, host=HOST, port=PORT, timeout=TIMEOUT, dry_run=False):
         """Create a Radio object.
 
         Arguments
             host: Domain name or IP address of the STS server
             port: TCP port number that the STS board listens to
             timeout: Network socket timeout in seconds
+            dry_run: If True, skip network operations
         """
         self.host = host
         self.port = port
         self.timeout = timeout
+        self.dry_run = dry_run
 
     def __repr__(self):
-        return f"{self.__class__.__name__}(host={self.host!r}, port={self.port!r}, timeout={self.timeout!r})"
+        return f"{self.__class__.__name__}(host={self.host!r}, port={self.port!r}, timeout={self.timeout!r}, dry_run={self.dry_run!r})"
 
-    def transmit(self, data):
+    def transmit(self, data, dry_run=None):
         """Send STS data to the STS board.
 
         Argument
             data: Sequence of Datum objects
+            dry_run: Optional override to skip network operations
 
         Result
             None
         """
+        is_dry_run = dry_run if dry_run is not None else self.dry_run
+        if is_dry_run:
+            for datum in data:
+                Radio.pack(datum)
+            return
+
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
             sock.settimeout(self.timeout)
@@ -64,15 +73,20 @@ class Radio:
         finally:
             sock.close()
 
-    def receive(self, ids):
+    def receive(self, ids, dry_run=None):
         """Retrieve latest STS data from the STS board.
 
         Argument
             ids: Sequence of STS radio IDs
+            dry_run: Optional override to skip network operations
 
         Result
             List of Datum objects
         """
+        is_dry_run = dry_run if dry_run is not None else self.dry_run
+        if is_dry_run:
+            return []
+
         data = []
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
