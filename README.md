@@ -4,6 +4,21 @@
 [![codecov](https://codecov.io/gh/Subaru-InstDiv/subaru-telemetry-client/branch/main/graph/badge.svg)](https://codecov.io/gh/Subaru-InstDiv/subaru-telemetry-client)
 
 
+## Ecosystem
+
+This library is one part of the Subaru Telemetry System (STS):
+
+| Repository | Role |
+|---|---|
+| **subaru-telemetry-client** *(this repo)* | Python client library — packs/unpacks the STS binary protocol and transmits/receives datum values over TCP |
+| [`subaru-telemetry-server`](https://github.com/Subaru-InstDiv/subaru-telemetry-server) | STSboard daemon, radio server, alarm subsystem, and all sensor polling scripts |
+| [`subaru-telemetry-web`](https://github.com/Subaru-InstDiv/subaru-telemetry-web) | Flask web frontend for telemetry dashboards |
+
+Sensor scripts in `subaru-telemetry-server` declare this library as a dependency and import
+`Datum` and `Radio` from it.
+
+---
+
 ## Overview
 
 - `subaru-telemetry-client` is a small Python library for communicating with the Subaru Telescope STS board ("STS radio").
